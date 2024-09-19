@@ -17,6 +17,7 @@ from .const import (
     WATER_UNITS,
     RECHARGE_ENABLED,
     RECHARGE_SCHEDULED,
+    LAST_UPDATE,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -30,12 +31,13 @@ class EcowaterDataCoordinator(DataUpdateCoordinator):
             hass,
             _LOGGER,
             name="Ecowater " + serialnumber,
-            update_interval=timedelta(minutes=10),
+            update_interval=timedelta(minutes=30),
         )
         self._username = username
         self._password = password
         self._serialnumber = serialnumber
         self._dateformat = dateformat
+        self._last_update = None
 
     async def _async_update_data(self):
         """Fetch data from API endpoint.
@@ -63,7 +65,7 @@ class EcowaterDataCoordinator(DataUpdateCoordinator):
                 data[OUT_OF_SALT_ON] = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
             # Runs correct datetime.strptime() depending on date format entered during setup.
             elif self._dateformat == "dd/mm/yyyy":
-                data[OUT_OF_SALT_ON] = datetime.strptime(data_json['out_of_salt'], '%d/%m/%Y').strftime('%Y-%m-%d')
+                data[OUT_OF_SALT_ON] = datetime.strptime(data_json['out_of_salt'], '%d/%m/%Y').strftime('%d-%m-%Y')
             elif self._dateformat == "mm/dd/yyyy":
                 data[OUT_OF_SALT_ON] = datetime.strptime(data_json['out_of_salt'], '%m/%d/%Y').strftime('%Y-%m-%d')
             else:
@@ -80,6 +82,27 @@ class EcowaterDataCoordinator(DataUpdateCoordinator):
             data[RECHARGE_ENABLED] = data_json['rechargeEnabled']
             data[RECHARGE_SCHEDULED] = False if ( re.search(nextRecharge_re, data_json['recharge']) ).group('nextRecharge') == 'Not Scheduled' else True
             
+            # Update the last time when data is received from the API and the softener is 'Online', according to date format.
+            if data[STATUS] == 'Online':
+                now = datetime.now()
+                if self._dateformat == "dd/mm/yyyy":
+                    self._last_update = now.strftime('%d-%m-%Y - %H:%M')
+                elif self._dateformat == "mm/dd/yyyy":
+                    self._last_update = now.strftime('%m-%d-%Y - %H:%M')
+                else:
+                    self._last_update = now.strftime('%d-%m-%Y - %H:%M')
+                    _LOGGER.exception(
+                        f"Error: Date format not set for last update"
+                    )
+
+                data[LAST_UPDATE] = self._last_update
+            else:
+                if self._last_update:
+                    data[LAST_UPDATE] = self._last_update
+            
             return data
         except Exception as e:
+            # Keeps the last updated date in case of error when downloading data
+            if self._last_update:
+                data[LAST_UPDATE] = self._last_update
             raise UpdateFailed(f"Error communicating with API: {e}")

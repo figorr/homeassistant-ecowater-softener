@@ -11,6 +11,21 @@
 
 `ecowater_softener` is a _custom component_ for [Home Assistant](https://www.home-assistant.io/). The integration allows you to pull data from your Ecowater water softener.
 
+## Current version: v3.4.1
+
+## Changelog
+Version 3.4.1
+- Fixed invalid regex warning - Updated regex by @figorr
+
+Version 3.4.0
+- Updated to using await async_forward_entry_setups - by @figorr
+- Grammar fixes - by @heytcass
+
+Version 3.3.1
+- New "last update" sensor: It retrieves the data and time the integration connects to the Ecowater server.
+- Some minor changes. OUT OF SALT ON ... now gives the data d/m/Y instead Y/m/d when date format at setup is dd/mm/yyyy
+- Update Readme file to show the current version and changelog.
+
 ## Installation
 
 #### HACS
@@ -41,6 +56,7 @@ This device will then have the entities show below.
 ![Entities](images/sensors.png)
 
 ## Credits
+
 - [@ThePrincelle](https://github.com/ThePrincelle) - French Translations
 - [@Quotic](https://github.com/Quotic) - German Translations
 - [@figorr](https://github.com/figorr) - Updated deprecated constants & Updated to using `await async_forward_entry_setups` & Updated regex
