@@ -13,9 +13,19 @@
 
 `ecowater_softener` is a _custom component_ for [Home Assistant](https://www.home-assistant.io/). The integration allows you to pull data from your Ecowater water softener.
 
-## Current version: v3.4.2
+## Current version: v3.4.4.B01
 
 ## Changelog
+Beta version 3.4.4.B01
+Update coordinator.py code in order to improve the "Last Update" sensor, to be able to improve the way to manage "Offline" status and also try to catch that situations where the API gets stucked and seems to block the connection due you reached the limit API Calls.
+
+I have seen some situations where the integration and even the mobile APP is showing the device is online but it is not updating any data to the mobile app or to the integration. But if you went to see the device you can see the device has new data that is not being uploaded to the app or to the API. In such cases only a powercycle of the device (turning off the device for 1 or 2 minutes before turning on it again) and once the device is on you can reload the integration (and you will receive the new data) or you can wait until the integration calls the API (according to the time interval between scans). In my case I set the timedelta to 30 minutes in order to not to reach the API Call limit).
+
+Version 3.4.3
+- Added translation not only to the setup process, the name of the sensor can also be translated using the translation_key code.
+- Updated translation json files to be able to translate the name sensors.
+- Updated the strings.json file.
+
 Version 3.4.2
 - Added "Last Update" sensor to show date and time from the last connection to API with "Online" Status.
 - Added Spanish Translation.
