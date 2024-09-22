@@ -57,7 +57,7 @@ class EcowaterDataCoordinator(DataUpdateCoordinator):
             
             # Handle the "Offline" status
             if data[STATUS] == 'Offline':
-                _LOGGER.warning("The Ecowater device is Offline. Date and data won't be updated. The "Last Update" date reflects the date of the last successful connection.")
+                _LOGGER.warning("The Ecowater device is Offline. Connection date and data won't be updated.")
                 # Keep the last successful update if the device is Offline
                 if self._last_update:
                     data[LAST_UPDATE] = self._last_update
