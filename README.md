@@ -13,9 +13,14 @@
 
 `ecowater_softener` is a _custom component_ for [Home Assistant](https://www.home-assistant.io/). The integration allows you to pull data from your Ecowater water softener.
 
-## Current version: v3.4.2
+## Current version: v3.4.3
 
 ## Changelog
+Version 3.4.3
+- Added translation not only to the setup process, the name of the sensor can also be translated using the translation_key code.
+- Updated translation json files to be able to translate the name sensors.
+- Updated the strings.json file.
+
 Version 3.4.2
 - Added "Last Update" sensor to show date and time from the last connection to API with "Online" Status.
 - Added Spanish Translation.
@@ -32,6 +37,29 @@ Version 3.4.0
 
 ## Installation
 
+#### Home Assistant helpers
+
+You need to manually create a couple of helpers in Home Assistant to help the integration to manage the ability to edit the time scans between updates. By default is set to 30 minutes but you can increase or decrease it according to your needs. You can create them using configuration.yaml or using the UI.
+
+1. Create an input_number to be able to edit this update interval.
+   
+   ```
+   input_number:
+     ecowater_update_interval:
+      name: "Update Interval for Ecowater"
+      min: 1
+      max: 120
+      step: 1
+      unit_of_measurement: "minutes"
+      icon: "mdi:timer"
+      initial: 30  # Default value is 30 minutes
+2. Create an input_button to save the changes once you have edited the update interval.
+
+   ```
+   input_button:
+     ecowater_save_interval:
+      name: "Save Update Interval for Ecowater"
+      icon: "mdi:content-save"
 #### HACS
 1. Go to HACS -> Integrations -> Click +
 1. Search for "Ecowater Softener" and add it to HACS
