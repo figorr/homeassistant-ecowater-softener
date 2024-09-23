@@ -3,6 +3,7 @@ import re
 import logging
 
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.helpers.event import async_track_state_change
 
 from ecowater_softener import Ecowater
 
@@ -31,13 +32,42 @@ class EcowaterDataCoordinator(DataUpdateCoordinator):
             hass,
             _LOGGER,
             name="Ecowater " + serialnumber,
-            update_interval=timedelta(minutes=30),
+            update_interval=timedelta(minutes=30),  # Default value
         )
         self._username = username
         self._password = password
         self._serialnumber = serialnumber
         self._dateformat = dateformat
         self._last_update = None
+
+        # Subscribe to changes in the input_button
+        async_track_state_change(
+            hass,
+            "input_button.ecowater_save_interval",
+            self._handle_save_interval
+        )
+
+    async def _handle_save_interval(self, entity_id, old_state, new_state):
+        """Handle the input_button press to save the update interval."""
+        try:
+            # Get the value from input_number
+            input_interval = self.hass.states.get("input_number.ecowater_update_interval")
+            if input_interval is not None:
+                new_interval = int(float(input_interval.state))
+                self.update_interval = timedelta(minutes=new_interval)
+                _LOGGER.info(f"Update interval set to {new_interval} minutes.")
+            else:
+                # Fallback to default value if input_number is not available
+                self.update_interval = timedelta(minutes=30)
+                _LOGGER.error("Failed to get input_number.ecowater_update_interval state. Reverting to default 30 minutes interval.")
+            
+            # Force an update to apply the new interval immediately
+            await self.async_request_refresh()
+            
+        except ValueError:
+            # Fallback to default value if there's an invalid input
+            self.update_interval = timedelta(minutes=30)
+            _LOGGER.error("Invalid value for input_number.ecowater_update_interval. Reverting to default 30 minutes interval.")
 
     async def _async_update_data(self):
         """Fetch data from API endpoint.
@@ -107,7 +137,7 @@ class EcowaterDataCoordinator(DataUpdateCoordinator):
         except Exception as e:
             # Checks if the error is because you reached the limit of API Calls
             if "429" in str(e) or "Too Many Requests" in str(e):
-                _LOGGER.error("You reached tha limit of API Calls. The connection has been temporary blocked.")
+                _LOGGER.error("You reached the limit of API Calls. The connection has been temporary blocked.")
             else:
                 _LOGGER.error(f"Error communicating with API: {e}")
 
