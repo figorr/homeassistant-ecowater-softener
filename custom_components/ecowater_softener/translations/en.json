@@ -42,8 +42,8 @@
       "recharge_scheduled": {
         "name": "Recharge Scheduled"
       },
-      "last_update": {
-        "name": "Last Update"
+      "update_interval": {
+        "name": "Update Interval"
       }
     }
   }
