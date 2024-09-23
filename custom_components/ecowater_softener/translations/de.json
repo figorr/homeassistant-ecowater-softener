@@ -44,6 +44,9 @@
       },
       "last_update": {
         "name": "Letzte Aktualisierung"
+      },
+      "update_interval": {
+        "name": "Updateintervall"
       }
     }
   }
