@@ -59,7 +59,7 @@ class EcowaterDataCoordinator(DataUpdateCoordinator):
             else:
                 # Fallback to default value if input_number is not available
                 self.update_interval = timedelta(minutes=30)
-                _LOGGER.error("Failed to get input_number.ecowater_update_interval state. Reverting to default 30 minutes interval.")
+                _LOGGER.error("Failed to get input number Ecowater Update Interval state. Reverting to default 30 minutes interval.")
             
             # Force an update to apply the new interval immediately
             await self.async_request_refresh()
@@ -67,7 +67,7 @@ class EcowaterDataCoordinator(DataUpdateCoordinator):
         except ValueError:
             # Fallback to default value if there's an invalid input
             self.update_interval = timedelta(minutes=30)
-            _LOGGER.error("Invalid value for input_number.ecowater_update_interval. Reverting to default 30 minutes interval.")
+            _LOGGER.error("Invalid value for Ecowater Update Interval. Reverting to default 30 minutes interval.")
 
     async def _async_update_data(self):
         """Fetch data from API endpoint.
