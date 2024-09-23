@@ -34,7 +34,6 @@ from .const import (
     UPDATE_INTERVAL_SENSOR,
 )
 
-
 from .coordinator import EcowaterDataCoordinator
 
 @dataclass
@@ -160,7 +159,7 @@ class EcowaterSensor(
                 return UnitOfVolume.LITERS
             elif self.coordinator.data['water_units'].lower() == 'gallons':
                 return UnitOfVolume.GALLONS
-        elif self.entity_description.native_unit_of_measurement != None:
+        elif self.entity_description.native_unit_of_measurement is not None:
             return self.entity_description.native_unit_of_measurement
 
     @callback
