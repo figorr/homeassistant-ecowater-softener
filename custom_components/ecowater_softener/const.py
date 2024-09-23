@@ -1,5 +1,8 @@
 DOMAIN = "ecowater_softener"
+COORDINATOR = "coordinator"
+PLATFORMS = ["sensor", "number", "button"]
 
+# Identificadores de los sensores y otros elementos
 STATUS = "status"
 DAYS_UNTIL_OUT_OF_SALT = "days_until_out_of_salt"
 OUT_OF_SALT_ON = "out_of_salt_on"
@@ -12,3 +15,8 @@ RECHARGE_ENABLED = "recharge_enabled"
 RECHARGE_SCHEDULED = "recharge_scheduled"
 LAST_UPDATE = "last_update"
 UPDATE_INTERVAL_SENSOR = "update_interval"
+
+# Valores predeterminados y límites para el input_number
+DEFAULT_UPDATE_INTERVAL = 30  # minutos
+MIN_UPDATE_INTERVAL = 1
+MAX_UPDATE_INTERVAL = 120
