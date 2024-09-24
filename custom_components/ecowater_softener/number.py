@@ -1,4 +1,5 @@
 from homeassistant.components.number import NumberEntity
+from .const import DEFAULT_UPDATE_INTERVAL, MIN_UPDATE_INTERVAL, MAX_UPDATE_INTERVAL
 
 class EcowaterUpdateInterval(NumberEntity):
     
