@@ -4,13 +4,13 @@ class EcowaterUpdateInterval(NumberEntity):
     
     _attr_name = "Ecowater Update Interval"
     _attr_icon = "mdi:update"
-    _attr_native_value = 30  # Valor inicial
+    _attr_native_value = DEFAULT_UPDATE_INTERVAL  # Default initial value from const.py
     _attr_editable = True
     _attr_mode = 'slider'
-    _attr_native_min_value = 1  # Valor mínimo
-    _attr_native_max_value = 120  # Valor máximo
-    _attr_native_step = 1  # Paso
-    _attr_native_unit_of_measurement = "min"  # Unidad de medida
+    _attr_native_min_value = MIN_UPDATE_INTERVAL  # Min value from const.py
+    _attr_native_max_value = MAX_UPDATE_INTERVAL  # Max value from const.py
+    _attr_native_step = 1  # Step
+    _attr_native_unit_of_measurement = "min"  # Unit of measurement
 
     def __init__(self):
         self._attr_unique_id = "ecowater_update_interval"
