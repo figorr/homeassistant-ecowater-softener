@@ -1,4 +1,5 @@
 from homeassistant.components.button import ButtonEntity
+from datetime import datetime, timezone
 
 class EcowaterSaveUpdateIntervalButton(ButtonEntity):
     
@@ -11,5 +12,6 @@ class EcowaterSaveUpdateIntervalButton(ButtonEntity):
 
     async def async_press(self) -> None:
         """Handle the button press."""
-        # Aquí puedes agregar el código que se ejecutará cuando el botón sea presionado.
-        self.hass.states.async_set("input_button.ecowater_save_update_interval", "pressed")
+        # Establece el estado con la marca de tiempo actual en formato ISO 8601 utilizando un objeto consciente de la zona horaria
+        current_time = datetime.now(timezone.utc).isoformat()
+        self.hass.states.async_set("input_button.ecowater_save_update_interval", current_time)
