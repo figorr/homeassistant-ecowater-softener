@@ -49,5 +49,19 @@
         "name": "Intervalo Actualización"
       }
     }
+  },
+  "unit": {
+    "minutes": {
+      "name": "minutos"
+    },
+    "liters": {
+      "name": "litros"
+    },
+    "gallons": {
+      "name": "galones"
+    },
+    "days": {
+      "name": "días"
+    }
   }
 }
