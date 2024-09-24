@@ -3,7 +3,6 @@ import re
 import logging
 
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from homeassistant.helpers.event import async_track_state_change
 
 from ecowater_softener import Ecowater
 
@@ -32,57 +31,23 @@ class EcowaterDataCoordinator(DataUpdateCoordinator):
             hass,
             _LOGGER,
             name="Ecowater " + serialnumber,
-            update_interval=timedelta(minutes=30),  # Default value
+            update_interval=timedelta(minutes=30),
         )
         self._username = username
         self._password = password
         self._serialnumber = serialnumber
         self._dateformat = dateformat
         self._last_update = None
-
-        # Subscribe to changes in the input_button
-        async_track_state_change(
-            hass,
-            "input_button.ecowater_save_interval",
-            self._handle_save_interval
-        )
-
-    async def _handle_save_interval(self, entity_id, old_state, new_state):
-        """Handle the input_button press to save the update interval."""
-        try:
-            # Get the value from input_number
-            input_interval = self.hass.states.get("input_number.ecowater_update_interval")
-            if input_interval is not None:
-                new_interval = int(float(input_interval.state))
-                # Validate the new interval
-                if 1 <= new_interval <= 120:
-                    self.update_interval = timedelta(minutes=new_interval)
-                    _LOGGER.info(f"Update interval set to {new_interval} minutes.")
-                else:
-                    _LOGGER.error("Input number value is out of range (1-120). Reverting to default 30 minutes interval.")
-                    self.update_interval = timedelta(minutes=30)
-            else:
-                # Fallback to default value if input_number is not available
-                self.update_interval = timedelta(minutes=30)
-                _LOGGER.error("Failed to get input_number.ecowater_update_interval state. Reverting to default 30 minutes interval.")
-            
-            # Force an update to apply the new interval immediately
-            await self.async_request_refresh()
-            
-        except ValueError:
-            # Fallback to default value if there's an invalid input
-            self.update_interval = timedelta(minutes=30)
-            _LOGGER.error("Invalid value for input_number.ecowater_update_interval. Reverting to default 30 minutes interval.")
+        self.data = {}  # Asegúrate de inicializar los datos aquí
 
     async def _async_update_data(self):
         """Fetch data from API endpoint.
-
+        
         This is the place to pre-process the data to lookup tables
         so entities can quickly look up their data.
         """
         try:
             data = {}
-
             ecowaterDevice = Ecowater(self._username, self._password, self._serialnumber)
             data_json = await self.hass.async_add_executor_job(lambda: ecowaterDevice._get())
 
@@ -93,17 +58,13 @@ class EcowaterDataCoordinator(DataUpdateCoordinator):
             # Handle the "Offline" status
             if data[STATUS] == 'Offline':
                 _LOGGER.warning("The Ecowater device is Offline. Connection date and data won't be updated.")
-                # Keep the last successful update if the device is Offline
                 if self._last_update:
                     data[LAST_UPDATE] = self._last_update
-                    _LOGGER.info("Using last successful update time.")
                 else:
-                    data[LAST_UPDATE] = "Failed Connection"  # If it's the first time and the device is Offline
-                    _LOGGER.warning("No successful updates yet, setting last update to 'Failed Connection'.")
+                    data[LAST_UPDATE] = "Failed Connection"
                 return data
 
             data[DAYS_UNTIL_OUT_OF_SALT] = data_json['out_of_salt_days']
-
             # Checks if date is 'today' or 'tomorrow'
             if str(data_json['out_of_salt']).lower() == 'today':
                 data[OUT_OF_SALT_ON] = datetime.today().strftime('%Y-%m-%d')
@@ -117,7 +78,7 @@ class EcowaterDataCoordinator(DataUpdateCoordinator):
                 data[OUT_OF_SALT_ON] = datetime.strptime(data_json['out_of_salt'], '%m/%d/%Y').strftime('%Y-%m-%d')
             else:
                 data[OUT_OF_SALT_ON] = ''
-                _LOGGER.error(f"Invalid date format: {self._dateformat}. Setting OUT_OF_SALT_ON to empty.")
+                _LOGGER.exception("Error: Date format not set")
 
             data[SALT_LEVEL_PERCENTAGE] = data_json['salt_level_percent']
             data[WATER_USAGE_TODAY] = data_json['water_today']
@@ -127,7 +88,6 @@ class EcowaterDataCoordinator(DataUpdateCoordinator):
             data[RECHARGE_ENABLED] = data_json['rechargeEnabled']
             data[RECHARGE_SCHEDULED] = re.search(nextRecharge_re, data_json['recharge']).group('nextRecharge') != 'Not Scheduled'
 
-            # Update the last time when data is received from the API, according to date format.
             now = datetime.now()
             if self._dateformat == "dd/mm/yyyy":
                 self._last_update = now.strftime('%d-%m-%Y - %H:%M')
@@ -135,25 +95,27 @@ class EcowaterDataCoordinator(DataUpdateCoordinator):
                 self._last_update = now.strftime('%m-%d-%Y - %H:%M')
             else:
                 self._last_update = now.strftime('%d-%m-%Y - %H:%M')
-                _LOGGER.error(f"Invalid date format: {self._dateformat} for last update.")
+                _LOGGER.exception("Error: Date format not set for last update")
 
             data[LAST_UPDATE] = self._last_update
             
             return data
 
         except Exception as e:
-            # Checks if the error is because you reached the limit of API Calls
             if "429" in str(e) or "Too Many Requests" in str(e):
-                _LOGGER.error("You reached the limit of API Calls. The connection has been temporarily blocked.")
+                _LOGGER.error("You reached the limit of API Calls. The connection has been temporary blocked.")
             else:
                 _LOGGER.error(f"Error communicating with API: {e}")
 
-            # In case of error, It keeps the last successful connection date or sets "Failed Connection" if it is the first time
             if self._last_update:
                 data[LAST_UPDATE] = self._last_update
-                _LOGGER.info("Using last successful update time.")
             else:
                 data[LAST_UPDATE] = "Failed Connection"
-                _LOGGER.warning("No successful updates yet, setting last update to 'Failed Connection'.")
                 
             raise UpdateFailed(f"Error communicating with API: {e}")
+
+    async def update_data(self, key, value):
+        """Update the coordinator data."""
+        self.data[key] = value
+        # Notifica a las entidades que dependen de estos datos que se han actualizado
+        self.async_set_updated_data(self.data)

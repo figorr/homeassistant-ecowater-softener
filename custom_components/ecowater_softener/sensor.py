@@ -113,12 +113,11 @@ async def async_setup_entry(
     if config_entry.options:
         config.update(config_entry.options)
 
-    coordinator = EcowaterDataCoordinator(hass, config['username'], config['password'], config['serialnumber'], config['dateformat']) 
-
-    await coordinator.async_config_entry_first_refresh()
+    # Usa el coordinador existente en lugar de crear uno nuevo
+    coordinator = hass.data[DOMAIN][config_entry.entry_id]["coordinator"]
 
     # Obtener el estado del input_number inicial
-    update_interval_value = hass.states.get("input_number.ecowater_update_interval")
+    update_interval_value = hass.states.get("number.ecowater_update_interval")
     if update_interval_value:
         update_interval_value = update_interval_value.state
 
@@ -148,7 +147,7 @@ class EcowaterSensor(
         self.entity_description = description
         self._attr_unique_id = "ecowater_" + serialnumber.lower() + "_" + self.entity_description.key
         self._attr_native_value = (
-            update_interval_value if description.key == UPDATE_INTERVAL_SENSOR else coordinator.data[self.entity_description.key]
+            update_interval_value if description.key == UPDATE_INTERVAL_SENSOR else coordinator.data.get(self.entity_description.key)
         )
         self._serialnumber = serialnumber
 
@@ -166,9 +165,10 @@ class EcowaterSensor(
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         if self.entity_description.key == UPDATE_INTERVAL_SENSOR:
-            self._attr_native_value = self.hass.states.get("input_number.ecowater_update_interval").state
+            self._attr_native_value = self.coordinator.data.get(UPDATE_INTERVAL_SENSOR)  # Actualiza desde el coordinador
         else:
-            self._attr_native_value = self.coordinator.data[self.entity_description.key]
+            self._attr_native_value = self.coordinator.data.get(self.entity_description.key)
+        
         self.async_write_ha_state()
 
     @property

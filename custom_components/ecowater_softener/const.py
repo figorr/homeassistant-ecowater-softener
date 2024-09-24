@@ -1,8 +1,5 @@
 DOMAIN = "ecowater_softener"
-COORDINATOR = "coordinator"
-PLATFORMS = ["sensor", "number", "button"]
 
-# Identificadores de los sensores y otros elementos
 STATUS = "status"
 DAYS_UNTIL_OUT_OF_SALT = "days_until_out_of_salt"
 OUT_OF_SALT_ON = "out_of_salt_on"
