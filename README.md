@@ -43,6 +43,7 @@ Version 3.4.0
 ## Installation
 
 #### Home Assistant helpers
+THIS IS NOT NECESSARY. I HAVE IMPLEMENTED A NEW CODE THAT AUTOMATICALLY CREATES THE NUMBER AND BUTTON.
 
 You need to manually create a couple of helpers in Home Assistant to help the integration to manage the ability to edit the time scans between updates. By default is set to 30 minutes but you can increase or decrease it according to your needs. You can create them using configuration.yaml or using the UI.
 
