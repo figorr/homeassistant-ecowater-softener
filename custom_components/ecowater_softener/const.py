@@ -11,9 +11,9 @@ WATER_UNITS = "water_units"
 RECHARGE_ENABLED = "recharge_enabled"
 RECHARGE_SCHEDULED = "recharge_scheduled"
 LAST_UPDATE = "last_update"
-UPDATE_INTERVAL_SENSOR = "update_interval"
+UPDATE_INTERVAL_SENSOR = "update_interval_sensor"
 
-# Valores predeterminados y límites para el input_number
+# Valores predeterminados y límites para la entidad_number
 DEFAULT_UPDATE_INTERVAL = 30  # minutos
 MIN_UPDATE_INTERVAL = 1
-MAX_UPDATE_INTERVAL = 120
+MAX_UPDATE_INTERVAL = 100  # The maximum accepted value in the number's native_unit_of_measurement (inclusive), according to HA developer documentation
