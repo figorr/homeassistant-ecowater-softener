@@ -45,8 +45,13 @@
       "last_update": {
         "name": "Dernière mise à jour"
       },
-      "update_interval": {
+      "update_interval_sensor": {
         "name": "Intervalle de mise à jour"
+      }
+    },
+    "number": {
+      "update_interval": {
+        "name": "Actualisation par intervalle"
       }
     }
   }
