@@ -63,7 +63,7 @@
         "name": "Recharge Enabled"
       },
       "recharge_status": {
-        "name": "Estado de la Recarga"
+        "name": "Recharge Status"
       },
       "rock_removed": {
         "name": "Rock Removed"
