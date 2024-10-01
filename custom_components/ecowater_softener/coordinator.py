@@ -34,8 +34,6 @@ class EcowaterDataCoordinator(DataUpdateCoordinator):
             device = list(filter(lambda device: device.serial_number == self._serialnumber ,ecowater_devices))[0]
             await self.hass.async_add_executor_job(lambda: device.update())
 
-            device.last_update = datetime.now().isoformat()
-
             return device
         except Exception as e:
             raise UpdateFailed(f"Error communicating with Ayla API: {e}")
