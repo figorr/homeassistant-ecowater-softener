@@ -38,7 +38,8 @@ from .const import (
     RECHARGE_ENABLED,
     RECHARGE_STATUS,
     ROCK_REMOVED,
-    ROCK_REMOVED_DAILY_AVERAGE
+    ROCK_REMOVED_DAILY_AVERAGE,
+    LAST_UPDATE
 )
 
 from .coordinator import EcowaterDataCoordinator
@@ -141,6 +142,11 @@ SENSOR_TYPES: tuple[EcowaterSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.WEIGHT,
         state_class=SensorStateClass.TOTAL,
         native_unit_of_measurement=UnitOfMass.POUNDS
+    ),
+    EcowaterSensorEntityDescription(
+        key=LAST_UPDATE,
+        translation_key="last_update",
+        icon="mdi:update",
     ),
 )
 
