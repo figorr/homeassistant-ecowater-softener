@@ -25,10 +25,7 @@
     }
   },
   "entity": {
-    "sensor": {
-      "status": {
-        "name": "Statut"
-      },
+    "sensor": {    
       "water_available": {
         "name": "Eau disponible"
       },
@@ -39,7 +36,7 @@
         "name": "Eau moyenne utilisée par jour"
       },
       "current_water_flow": {
-        "name": "Débit d'eau actuel"
+        "name": "Débit d'eau"
       },
       "salt_level_percentage": {
         "name": "Pourcentage du niveau de sel"
