@@ -23,8 +23,9 @@
     "abort": {
       "no_available_devices": "Keine Geräte zum Konfigurieren verfügbar."
     }
-  },
-  "entity": {   
+   },
+  "entity": {
+    "sensor": {   
       "water_available": {
         "name": "Wasser verfügbar"
       },
@@ -72,3 +73,4 @@
       }
     }
   }
+}
