@@ -35,7 +35,7 @@
         "name": "Durchschnittlicher Wasserverbrauch pro Tag"
       },
       "current_water_flow": {
-        "name": "Aktueller Wasserdurchfluss"
+        "name": "Wasserdurchfluss"
       },
       "salt_level_percentage": {
         "name": "Salzgehalt in Prozent"
