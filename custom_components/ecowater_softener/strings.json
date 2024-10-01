@@ -25,10 +25,7 @@
     }
   },
   "entity": {
-    "sensor": {
-      "status": {
-        "name": "Status"
-      },
+    "sensor": {      
       "water_available": {
         "name": "Water Available"
       },
