@@ -201,7 +201,11 @@ class EcowaterSensor(
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        self._attr_native_value = getattr(self.coordinator.data, self.entity_description.key)
+        if self.entity_description.key == LAST_UPDATE:
+            self._attr_native_value = self.coordinator.data.last_update
+        else:
+            self._attr_native_value = getattr(self.coordinator.data, self.entity_description.key)
+        
         self.async_write_ha_state()
 
     @property
