@@ -67,9 +67,6 @@
       },
       "rock_removed_daily_average": {
         "name": "Average Rock Removed per Day"
-      },
-      "last_update": {
-        "name": "Last Update"
       }
     }
   }
