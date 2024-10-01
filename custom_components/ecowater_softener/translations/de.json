@@ -67,9 +67,6 @@
       },
       "rock_removed_daily_average": {
         "name": "Durchschnittlich pro Tag entfernter Stein"
-      },
-      "last_update": {
-        "name": "Letzte Aktualisierung"
       }
     }
   }
