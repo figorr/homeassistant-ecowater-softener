@@ -36,7 +36,7 @@
         "name": "Average Water Used per Day"
       },
       "current_water_flow": {
-        "name": "Current Water Flow"
+        "name": "Water Flow"
       },
       "salt_level_percentage": {
         "name": "Salt Level Percentage"
