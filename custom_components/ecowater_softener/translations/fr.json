@@ -50,7 +50,7 @@
       "salt_type": {
         "name": "Type de sel"
       },
-      "last_recharge": {
+      "last_recharge_date": {
         "name": "Dernière recharge"
       },
       "days_since_recharge": {
