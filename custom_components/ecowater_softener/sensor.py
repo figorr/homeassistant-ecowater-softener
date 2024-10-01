@@ -142,12 +142,7 @@ SENSOR_TYPES: tuple[EcowaterSensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.WEIGHT,
         state_class=SensorStateClass.TOTAL,
         native_unit_of_measurement=UnitOfMass.POUNDS
-    ),
-    EcowaterSensorEntityDescription(
-        key=LAST_UPDATE,
-        translation_key="last_update",
-        icon="mdi:update",
-    ),
+    )
 )
 
 async def async_setup_entry(
@@ -201,11 +196,7 @@ class EcowaterSensor(
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        if self.entity_description.key == LAST_UPDATE:
-            self._attr_native_value = self.coordinator.data.last_update
-        else:
-            self._attr_native_value = getattr(self.coordinator.data, self.entity_description.key)
-        
+        self._attr_native_value = getattr(self.coordinator.data, self.entity_description.key)
         self.async_write_ha_state()
 
     @property
